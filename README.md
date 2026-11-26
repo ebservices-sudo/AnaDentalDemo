@@ -2,6 +2,10 @@
 
 One-page bilingual (SQ/EN) site prepared by EB Services. Plain HTML, CSS and vanilla JS, no build step.
 
+## The Smile Line
+
+The one signature animation: a fine navy line that draws itself down the side margin as you scroll (SVG path + stroke-dashoffset, scrubbed by GSAP ScrollTrigger, self-hosted in `assets/js/vendor/`). It frames the results, splits into a tooth beside the services, adds a sparkle by the clinic and ends as a smile under "Rezervoni terminin tuaj online". The path is built from the live layout in `assets/js/smile-line.js`, so it adapts to any screen and only draws shapes where the margin has room. With reduced motion it shows finished and static.
+
 - Live: https://anadentaldemo.netlify.app (also https://ebservices-sudo.github.io/AnaDentalDemo/)
 - Every push to `main` redeploys both.
 
@@ -20,7 +24,7 @@ Note: Instagram and Facebook also list "Dëshmorët e Kombit Boulevard 115–143
 
 ## Before/after photos
 
-Real cases published by the clinic. Each pair was split from the original post, scaled and shifted so the mouth lines up, and cropped to the same 3:2 frame. No pixels were generated or retouched. Files: `assets/img/cases/c1..c5-{para,pas}-{700,1200}.webp`; the order and labels live in `CASES` in `assets/js/main.js`.
+Real cases published by the clinic. Each pair was split from the original post, scaled and shifted so the mouth lines up, and cropped to the same 3:2 frame. No pixels were generated or retouched. Files: `assets/img/cases/c{1,3,4,5}-{para,pas}-{700,1200}.webp`; the order and labels live in `CASES` in `assets/js/main.js`.
 
 ## Fonts
 

@@ -10,10 +10,9 @@
   var WA = 'https://wa.me/38345520121?text=';
   var WA_MSG = { sq: 'Përshëndetje, dua të rezervoj një termin.', en: 'Hello, I would like to book an appointment.' };
 
-  /* Real cases, published by the clinic on Instagram. First = the signature reveal. */
+  /* Real cases, published by the clinic on Instagram. */
   /* cap = the clinic's own caption on that post, only where it was published */
   var CASES = [
-    { key: 'c2', label: { sq: 'Transformimi i buzëqeshjes', en: 'Smile transformation' } },
     { key: 'c1', label: { sq: 'Rasti 1', en: 'Case 1' } },
     { key: 'c3', label: { sq: 'Rasti 2', en: 'Case 2' }, cap: { sq: 'Restaurime zirkoni multilayer', en: 'Multilayer zirconia restorations' } },
     { key: 'c4', label: { sq: 'Rasti 3', en: 'Case 3' }, cap: { sq: 'Rregullimi i kafshimit të kundërt me kurora zirkoni', en: 'Crossbite correction with zirconia crowns' } },
@@ -39,11 +38,9 @@
     'hero.lead': 'Implants, orthodontics and aesthetic dentistry, with results that speak for themselves.',
     'hero.alt': 'The Ana Dental Care team at the clinic',
     'res.kicker': 'Before and after', 'res.title': 'Real results from our patients',
-    'res.hint': 'Scroll down to see the change',
     'res.more': 'More cases', 'res.moreSub': 'Tap a case and drag the handle.', 'res.cases': 'Cases',
     'res.note': 'Photos of Ana Dental Care patients, published by the clinic.',
     'ba.before': 'Before', 'ba.after': 'After', 'ba.aria': 'Compare before and after',
-    'ba.beforeAlt': 'Before treatment', 'ba.afterAlt': 'After treatment',
     'srv.kicker': 'Services', 'srv.title': 'Three specialities. One standard.',
     's1.t': 'Implantology', 's1.d': 'New, fixed teeth that look and feel natural.', 's1.alt': 'Implant treatment at Ana Dental Care',
     's2.t': 'Orthodontics', 's2.d': 'Straight teeth and an even bite, step by step.', 's2.alt': 'Orthodontic treatment at Ana Dental Care',
@@ -103,6 +100,8 @@
   new IntersectionObserver(function (es) { es.forEach(function (e) { pastHero = !e.isIntersecting && e.boundingClientRect.top < 0; }); chrome(); }).observe(heroBtns);
   new IntersectionObserver(function (es) { es.forEach(function (e) { atEnd = e.isIntersecting || e.boundingClientRect.top < 0; }); chrome(); }).observe(finalSec);
 
+  addEventListener('scroll', chrome, { passive: true });
+
   /* ---------- calm entrances ---------- */
   var io = new IntersectionObserver(function (es) {
     es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
@@ -157,66 +156,21 @@
     });
   }
 
-  /* ---------- the signature: pinned scroll wipe ---------- */
-  var reveal = $('[data-reveal]'), mainBa = $('[data-main]');
-  setCase(mainBa, CASES[0]);
-  var main = new Slider(mainBa, 100);
-  var target = 100, shown = 100, raf = null, last = 0, manual = false, done = false, onScreen = false;
-
-  function progress() {
-    var r = reveal.getBoundingClientRect(), range = r.height - innerHeight;
-    return range > 0 ? Math.min(1, Math.max(0, -r.top / range)) : 1;
-  }
-  function scrollTarget() {
-    var p = progress(), w = Math.min(1, p / 0.72);   // wipe finishes at 72% of the pin, then the headline holds
-    w = w < .5 ? 2 * w * w : 1 - Math.pow(-2 * w + 2, 2) / 2;
-    return { p: p, pos: 100 - w * 100 };
-  }
-  function tick(now) {
-    var dt = Math.min(100, now - (last || now)); last = now;
-    shown += (target - shown) * (1 - Math.pow(1 - 0.18, dt / 16.667));
-    if (Math.abs(target - shown) < 0.05) { shown = target; raf = null; last = 0; } else raf = requestAnimationFrame(tick);
-    main.set(shown);
-  }
-  function onScroll() {
-    if (reduce.matches) return;
-    chrome();
-    if (!onScreen) return;
-    var s = scrollTarget();
-    var d = s.p > 0.8; if (d !== done) { done = d; reveal.classList.toggle('done', d); }
-    if (main.dragging) return;
-    if (manual) { manual = false; shown = main.p; }
-    target = s.pos;
-    if (raf === null) raf = requestAnimationFrame(tick);
-  }
-  main.onDrag = function () { manual = true; if (raf) { cancelAnimationFrame(raf); raf = null; } };
-  new IntersectionObserver(function (es) { onScreen = es[0].isIntersecting; if (onScreen) onScroll(); }).observe(reveal);
-  addEventListener('scroll', onScroll, { passive: true });
-
-  function applyMotion() {
-    if (reduce.matches) { if (raf) cancelAnimationFrame(raf); raf = null; main.set(50); reveal.classList.add('done'); }
-    else { reveal.classList.remove('done'); done = false; onScroll(); }
-  }
-  reduce.addEventListener('change', applyMotion);
-
   /* ---------- more cases ---------- */
-  var smallBa = $('[data-small]'), small = new Slider(smallBa, 50), tabsEl = $('[data-case-tabs]'), cur = 1;
+  var smallBa = $('[data-small]'), small = new Slider(smallBa, 50), tabsEl = $('[data-case-tabs]'), cur = 0;
   function renderTabs() {
     tabsEl.innerHTML = '';
-    CASES.slice(1).forEach(function (c, i) {
+    CASES.forEach(function (c, i) {
       var b = document.createElement('button');
       b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = c.label[lang];
-      b.setAttribute('aria-selected', String(i + 1 === cur));
-      b.addEventListener('click', function () { showCase(i + 1); });
+      b.setAttribute('aria-selected', String(i === cur));
+      b.addEventListener('click', function () { showCase(i); });
       tabsEl.appendChild(b);
     });
     var c = CASES[cur];
     $('[data-before]', smallBa).alt = (lang === 'en' ? 'Before: ' : 'Para: ') + c.label[lang];
     $('[data-after]', smallBa).alt = (lang === 'en' ? 'After: ' : 'Pas: ') + c.label[lang];
     $('[data-case-cap]').textContent = c.cap ? c.cap[lang] : '';
-    var m = CASES[0];
-    $('[data-before]', mainBa).alt = (lang === 'en' ? 'Before: ' : 'Para: ') + m.label[lang];
-    $('[data-after]', mainBa).alt = (lang === 'en' ? 'After: ' : 'Pas: ') + m.label[lang];
   }
   function showCase(i) {
     if (i === cur) return; cur = i;
@@ -229,7 +183,7 @@
       renderTabs();
     }, reduce.matches ? 0 : 250);
   }
-  setCase(smallBa, CASES[1]);
+  setCase(smallBa, CASES[0]);
 
   /* ---------- Instagram strip ---------- */
   var igRow = $('[data-ig]');
@@ -258,6 +212,5 @@
   var init = 'sq';
   try { init = new URLSearchParams(location.search).get('lang') || localStorage.getItem('ana-lang') || 'sq'; } catch (e) {}
   setLang(init);
-  applyMotion();
   chrome();
 })();

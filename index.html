@@ -112,22 +112,12 @@
       </div>
     </section>
 
-    <!-- RESULTS: the signature scroll wipe -->
+    <!-- RESULTS -->
     <section class="results" id="rezultatet">
-      <div class="reveal" data-reveal>
-        <div class="reveal__stage">
-          <div class="reveal__head">
-            <p class="kicker kicker--center" data-i18n="res.kicker">Para dhe pas</p>
-            <h2 class="reveal__title" data-reveal-title data-i18n="res.title">Rezultate reale nga pacientët tanë</h2>
-          </div>
-          <div class="ba ba--hero" data-ba data-main>
-            <img class="ba__img" data-before alt="Para trajtimit" data-i18n-attr="alt:ba.beforeAlt" draggable="false">
-            <div class="ba__after"><img class="ba__img" data-after alt="Pas trajtimit" data-i18n-attr="alt:ba.afterAlt" draggable="false"></div>
-            <span class="ba__tag ba__tag--l" data-i18n="ba.before">Para</span>
-            <span class="ba__tag ba__tag--r" data-i18n="ba.after">Pas</span>
-            <div class="ba__handle" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Krahaso para dhe pas" data-i18n-attr="aria-label:ba.aria"><span class="ba__knob"><svg class="i"><use href="#i-lr"/></svg></span></div>
-          </div>
-          <p class="reveal__hint" data-hint data-i18n="res.hint">Lëvizni poshtë për të parë ndryshimin</p>
+      <div class="wrap">
+        <div class="head head--center">
+          <p class="kicker kicker--center" data-in data-i18n="res.kicker">Para dhe pas</p>
+          <h2 data-in style="--d:80ms" data-i18n="res.title">Rezultate reale nga pacientët tanë</h2>
         </div>
       </div>
 
@@ -273,5 +263,8 @@
   </div>
 
   <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/vendor/gsap.min.js" defer></script>
+  <script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
+  <script src="assets/js/smile-line.js" defer></script>
 </body>
 </html>
